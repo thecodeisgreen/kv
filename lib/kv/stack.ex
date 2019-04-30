@@ -1,8 +1,8 @@
 defmodule Stack do
   use GenServer
 
-  def start_link(default, options) when is_list(default) do
-    GenServer.start_link(__MODULE__, default, options)
+  def start_link(default) when is_list(default) do
+    GenServer.start_link(__MODULE__, default, name: MyStack)
   end
 
   def push(pid, item) do
@@ -11,6 +11,10 @@ defmodule Stack do
 
   def pop(pid) do
     GenServer.call(pid, :pop)
+  end
+
+  def value(pid) do
+    GenServer.call(pid, :value)
   end
 
   # Server (callbacks)
@@ -23,6 +27,11 @@ defmodule Stack do
   @impl true
   def handle_call(:pop, _from, [head | tail]) do
     {:reply, head, tail}
+  end
+
+  @impl true
+  def handle_call(:value, _from, state) do
+    {:reply, state, state}
   end
 
   @impl true
